@@ -42,7 +42,7 @@ const server = http.createServer((req,res) => {
   case 'GET': {
     if (/^\/books/.test(requestPath)) {
       const resources = requestPath.split(/[\\/]/).splice(2);
-      res.writeHead(200, {'Content-Type': 'application/JSON'});
+      res.writeHead(200, {'Content-Type': 'application/json'});
       if (resources.length == 0) {
         res.write(JSON.stringify(list()));
       } else {
@@ -50,7 +50,7 @@ const server = http.createServer((req,res) => {
       }
     } else {
       res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.write('Sorry, what you were looking for is not available.');
+      res.write('Not Found.\n\nSorry, what you were looking for is not available.');
     }
     res.end('\n');
     break;
@@ -59,7 +59,7 @@ const server = http.createServer((req,res) => {
   case 'POST': {
     if (/^\/books/.test(requestPath)) {
       var body='';
-      res.writeHead(201, {'Content-Type': 'application/JSON'});
+      res.writeHead(201, {'Content-Type': 'application/json'});
       req.on('data', (chunk) => body += chunk);
       req.on('end', () => {
 
