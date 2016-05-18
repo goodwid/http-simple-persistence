@@ -30,5 +30,11 @@
   "bugs": {
     "url": "https://github.com/goodwid/http-simple-persistence/issues"
   },
-  "homepage": "https://github.com/goodwid/http-simple-persistence#readme"
+  "homepage": "https://github.com/goodwid/http-simple-persistence#readme",
+  "dependencies": {
+    "install": "^0.7.3",
+    "mkdirp": "^0.5.1",
+    "npm": "^3.9.0",
+    "sander": "^0.5.1"
+  }
 }
