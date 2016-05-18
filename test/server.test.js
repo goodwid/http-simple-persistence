@@ -11,7 +11,7 @@ describe('server error handling',() => {
     request
       .get('/test')
       .end((err,res) => {
-        assert.equal(res.statusCode, 400);
+        assert.equal(res.statusCode, 404);
         assert.ok(res.text);
         done();
       });
