@@ -40,9 +40,10 @@ function list() {
 const server = http.createServer((req,res) => {
   const requestPath = url.parse(req.url, true).pathname;
   switch (req.method) {
+
   case 'GET': {
-    if (/^\/books/.test(requestPath)){
-      res.writeHead(200, {'Content-Type': 'text/JSON'});
+    if (/^\/books/.test(requestPath)) {
+      res.writeHead(200, {'Content-Type': 'application/JSON'});
       const resources = requestPath.split(/[\\/]/).splice(2);
       if (resources.length == 0) {
         res.write(JSON.stringify(list()));
@@ -56,26 +57,41 @@ const server = http.createServer((req,res) => {
     res.end('\n');
     break;
   }
+
   case 'POST': {
-    if (/^\/books/.test(requestPath)){
-      res.writeHead(201, {'Content-Type': 'text/JSON'});
+    if (/^\/books/.test(requestPath)) {
       var body='';
+      res.writeHead(201, {'Content-Type': 'application/JSON'});
       req.on('data', (chunk) => body += chunk);
       req.on('end', () => {
-        const data = body.split('=')[1];
-        res.write(data);
+        console.log(JSON.parse(body));
+        res.end(body);
       });
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request.\n\nSorry, that request is not supported');
+      res.end('\n');
     }
-    res.end('\n');
     break;
   }
   case 'PUT': {
+    if (/^\/books/.test(requestPath)) {
+      
+    } else {
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Bad Request.\n\nSorry, that request is not supported');
+      res.end('\n');
+    }
     break;
   }
   case 'DELETE': {
+    if (/^\/books/.test(requestPath)) {
+
+    } else {
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Bad Request.\n\nSorry, that request is not supported');
+      res.end('\n');
+    }
     break;
   }
   default: {
