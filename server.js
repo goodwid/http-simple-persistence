@@ -1,7 +1,5 @@
 const http = require('http');
 const url = require('url');
-
-
 // const db = require('./db');
 // API reference
 // db.create
@@ -43,8 +41,8 @@ const server = http.createServer((req,res) => {
 
   case 'GET': {
     if (/^\/books/.test(requestPath)) {
-      res.writeHead(200, {'Content-Type': 'application/JSON'});
       const resources = requestPath.split(/[\\/]/).splice(2);
+      res.writeHead(200, {'Content-Type': 'application/JSON'});
       if (resources.length == 0) {
         res.write(JSON.stringify(list()));
       } else {
@@ -64,8 +62,10 @@ const server = http.createServer((req,res) => {
       res.writeHead(201, {'Content-Type': 'application/JSON'});
       req.on('data', (chunk) => body += chunk);
       req.on('end', () => {
-        console.log(JSON.parse(body));
-        res.end(body);
+
+        var data = (JSON.parse(body));
+        data.resource = '';
+        res.end(JSON.stringify(data));
       });
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
@@ -76,7 +76,7 @@ const server = http.createServer((req,res) => {
   }
   case 'PUT': {
     if (/^\/books/.test(requestPath)) {
-      
+      null;
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request.\n\nSorry, that request is not supported');
@@ -86,7 +86,7 @@ const server = http.createServer((req,res) => {
   }
   case 'DELETE': {
     if (/^\/books/.test(requestPath)) {
-
+      null;
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request.\n\nSorry, that request is not supported');

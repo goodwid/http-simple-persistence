@@ -8,7 +8,7 @@ describe('server',() => {
   const request = chai.request(server);
   describe('GET',() => {
     describe('error handling',() => {
-      it('get without a valid endpoint returns a 404 status code.', done => {
+      it('without a valid endpoint returns a 404 status code.', done => {
         request
           .get('/test')
           .end((err,res) => {
@@ -21,7 +21,7 @@ describe('server',() => {
 
     describe('operations', () => {
 
-      it('get to /books returns a list of available resources', done => {
+      it('/books returns a list of available resources', done => {
         request
           .get('/books')
           .end((err,res) => {
@@ -31,7 +31,7 @@ describe('server',() => {
           });
       });
 
-      it('get to /notes/resource returns the data for that resource', done => {
+      it('/books/resource returns the data for that resource', done => {
         request
           .get('/books/test')
           .end((err,res) => {
@@ -45,12 +45,34 @@ describe('server',() => {
 
   describe('POST',() => {
     describe('error handling',() => {
-      it('POST without valid data returns a 400 status code.', done => {
+      it('without valid data returns a 400 status code.', done => {
         request
           .post('/test')
           .end((err,res) => {
             assert.equal(res.statusCode, 400);
             assert.ok(res.text);
+            done();
+          });
+      });
+    });
+    describe('operations', () => {
+      var testData =  {
+        'title' : 'Gone With The Wind',
+        'author' : 'Margaret Mitchell',
+        'genre' : 'fiction',
+        'pub_year' : 1964,
+        'read' : false
+      };
+      it('/books returns JSON data with resource added', done => {
+        request
+          .post('/books')
+          .set('Content-Type', 'application/json')
+          .send(JSON.stringify(testData))
+          .end((err,res) => {
+            var result = JSON.parse(res.text);
+            assert.equal(res.statusCode, 201);
+            assert.isObject(result);
+            assert.property(result, 'resource');
             done();
           });
       });
