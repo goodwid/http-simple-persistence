@@ -6,6 +6,13 @@ chai.use(chaiHttp);
 
 describe('server',() => {
   const request = chai.request(server);
+  var testData =  {
+    'title' : 'Gone With The Wind',
+    'author' : 'Margaret Mitchell',
+    'genre' : 'fiction',
+    'pub_year' : 1964,
+    'read' : false
+  };
   describe('GET',() => {
     describe('error handling',() => {
       it('without a valid endpoint returns a 404 status code.', done => {
@@ -26,6 +33,7 @@ describe('server',() => {
           .get('/books')
           .end((err,res) => {
             assert.equal(res.statusCode, 200);
+            assert.propertyVal(res.header,'content-type','application/json');
             assert.isArray(JSON.parse(res.text));
             done();
           });
@@ -36,6 +44,7 @@ describe('server',() => {
           .get('/books/test')
           .end((err,res) => {
             assert.equal(res.statusCode, 200);
+            assert.propertyVal(res.header,'content-type','application/json');
             assert.isObject(JSON.parse(res.text));
             done();
           });
@@ -45,7 +54,7 @@ describe('server',() => {
 
   describe('POST',() => {
     describe('error handling',() => {
-      it('without valid data returns a 400 status code.', done => {
+      it('without a valid endpoint returns a 400 status code.', done => {
         request
           .post('/test')
           .end((err,res) => {
@@ -56,14 +65,39 @@ describe('server',() => {
       });
     });
     describe('operations', () => {
-      var testData =  {
-        'title' : 'Gone With The Wind',
-        'author' : 'Margaret Mitchell',
-        'genre' : 'fiction',
-        'pub_year' : 1964,
-        'read' : false
-      };
       it('/books returns JSON data with resource added', done => {
+        request
+          .post('/books')
+          .set('Content-Type', 'application/json')
+          .send(JSON.stringify(testData))
+          .end((err,res) => {
+            var result = JSON.parse(res.text);
+            assert.equal(res.statusCode, 201);
+            assert.isObject(result);
+            assert.property(result, 'resource');
+            assert.propertyVal(res.header,'content-type','application/json');
+            assert.propertyVal(result, 'genre', testData.genre);
+            done();
+          });
+      });
+    });
+  });
+
+  describe('PUT',() => {
+    describe('error handling',() => {
+      it('without a valid endpoint returns a 400 status code.', done => {
+        request
+          .put('/test')
+          .end((err,res) => {
+            assert.equal(res.statusCode, 400);
+            assert.ok(res.text);
+            done();
+          });
+      });
+    });
+
+    describe('operations', () => {
+      it('/books returns the updated object.', done => {
         request
           .post('/books')
           .set('Content-Type', 'application/json')
@@ -77,8 +111,36 @@ describe('server',() => {
           });
       });
     });
+  });
 
+  describe('DELETE',() => {
+    describe('error handling',() => {
+      it('without a valid endpoint returns a 400 status code.', done => {
+        request
+          .delete('/test')
+          .end((err,res) => {
+            assert.equal(res.statusCode, 400);
+            assert.ok(res.text);
+            done();
+          });
+      });
+    });
 
+    describe.skip('operations', () => {
+      it('/books returns the updated object.', done => {
+        request
+          .post('/books')
+          .set('Content-Type', 'application/json')
+          .send(JSON.stringify(testData))
+          .end((err,res) => {
+            var result = JSON.parse(res.text);
+            assert.equal(res.statusCode, 201);
+            assert.isObject(result);
+            assert.property(result, 'resource');
+            done();
+          });
+      });
+    });
   });
 
 

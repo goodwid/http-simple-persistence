@@ -1,6 +1,6 @@
 const http = require('http');
 const url = require('url');
-// const db = require('./db');
+const db = require('./db');
 // API reference
 // db.create
 // db.update
@@ -42,15 +42,29 @@ const server = http.createServer((req,res) => {
   case 'GET': {
     if (/^\/books/.test(requestPath)) {
       const resources = requestPath.split(/[\\/]/).splice(2);
-      res.writeHead(200, {'Content-Type': 'application/JSON'});
+
+
+      // db.read(JSON.parse(resources))
+      //   .then(data => {
+      //     res.writeHead(200, {'Content-Type': 'application/json'});
+      //     res.write(JSON.stringify(data));
+      //   })
+      //   .catch(err => {
+      //     res.writeHead(404, {'Content-Type': 'text/plain'});
+      //     res.write(err);
+      //   });
+
+      res.writeHead(200, {'Content-Type': 'application/json'});
       if (resources.length == 0) {
         res.write(JSON.stringify(list()));
       } else {
         res.write(JSON.stringify(data()));
       }
+
+
     } else {
       res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.write('Sorry, what you were looking for is not available.');
+      res.write('Not Found.\n\nSorry, what you were looking for is not available.');
     }
     res.end('\n');
     break;
@@ -58,12 +72,12 @@ const server = http.createServer((req,res) => {
 
   case 'POST': {
     if (/^\/books/.test(requestPath)) {
-      var body='';
-      res.writeHead(201, {'Content-Type': 'application/JSON'});
+      let body='';
       req.on('data', (chunk) => body += chunk);
       req.on('end', () => {
 
-        var data = (JSON.parse(body));
+        res.writeHead(201, {'Content-Type': 'application/json'});
+        let data = (JSON.parse(body));
         data.resource = '';
         res.end(JSON.stringify(data));
       });
@@ -76,7 +90,15 @@ const server = http.createServer((req,res) => {
   }
   case 'PUT': {
     if (/^\/books/.test(requestPath)) {
-      null;
+      const resource = requestPath.split(/[\\/]/).splice(1)[1];
+      let body='';
+      req.on('data', (chunk) => body += chunk);
+      req.on('end', () => {
+        res.writeHead(201, {'Content-Type': 'application/json'});
+        res.write(body);
+        res.end('\n');
+      });
+
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request.\n\nSorry, that request is not supported');
