@@ -6,12 +6,20 @@ chai.use(chaiHttp);
 
 describe('server',() => {
   const request = chai.request(server);
-  const testData =  {
+  const testPostData =  {
     'title' : 'Gone With The Wind',
     'author' : 'Margaret Mitchell',
     'genre' : 'fiction',
     'pub_year' : 1964,
     'read' : false
+  };
+  const testPutData = {
+    'title' : 'Gone With The Wind',
+    'author' : 'Margaret Mitchell',
+    'genre' : 'fiction',
+    'pub_year' : 1964,
+    'read' : false,
+    'resource' : 'Gone_With_The_Wind_1964'
   };
   const testResource = 'Gone_With_The_Wind_1964';
 
@@ -72,21 +80,21 @@ describe('server',() => {
         request
           .post('/books')
           .set('Content-Type', 'application/json')
-          .send(JSON.stringify(testData))
+          .send(JSON.stringify(testPostData))
           .end((err,res) => {
             var result = JSON.parse(res.text);
             assert.equal(res.statusCode, 201);
             assert.isObject(result);
             assert.property(result, 'resource');
             assert.propertyVal(res.header,'content-type','application/json');
-            assert.propertyVal(result, 'genre', testData.genre);
+            assert.propertyVal(result, 'genre', testPostData.genre);
             done();
           });
       });
     });
   });
 
-  describe.skip('PUT',() => {
+  describe('PUT',() => {
     describe('error handling',() => {
       it('without a valid endpoint returns a 400 status code', done => {
         request
@@ -104,7 +112,7 @@ describe('server',() => {
         request
           .put('/books/'+testResource)
           .set('Content-Type', 'application/json')
-          .send(JSON.stringify(testData))
+          .send(JSON.stringify(testPutData))
           .end((err,res) => {
             var result = JSON.parse(res.text);
             assert.equal(res.statusCode, 201);
@@ -116,7 +124,7 @@ describe('server',() => {
     });
   });
 
-  describe.skip('DELETE',() => {
+  describe('DELETE',() => {
     describe('error handling',() => {
       it('without a valid endpoint returns a 400 status code.', done => {
         request
