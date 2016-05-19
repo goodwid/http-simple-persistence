@@ -64,7 +64,10 @@ books.update = function(resource, obj){
   var objJson = JSON.stringify(obj);
 
   return sander.writeFile(newPath, objJson)
-  .then(sander.unlink(origPath));
+  .then(sander.unlink(origPath))
+  .then( () =>{
+    return obj;
+  });
 
 };
 

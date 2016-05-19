@@ -6,11 +6,7 @@ describe('books module',() => {
 
   describe('on create', () =>{
 
-    it('returns an object', () =>{
-
-    });
-
-    it('writes to json file', ( done ) =>{
+    it('writes to json file and returns an object', ( done ) =>{
       db.create({title:'herbook', pub_year:'1986'})
       .then(data => {
         assert.isOk(data);
