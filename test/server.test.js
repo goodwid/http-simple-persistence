@@ -14,9 +14,11 @@ describe('server',() => {
     'read' : false
   };
   const testResource = 'Gone_With_The_Wind_1964';
+
+
   describe('GET',() => {
     describe('error handling',() => {
-      it('without a valid endpoint returns a 404 status code.', done => {
+      it('without a valid endpoint returns a 404 status code', done => {
         request
           .get('/test')
           .end((err,res) => {
@@ -55,7 +57,7 @@ describe('server',() => {
 
   describe('POST',() => {
     describe('error handling',() => {
-      it('without a valid endpoint returns a 400 status code.', done => {
+      it('without a valid endpoint returns a 400 status code', done => {
         request
           .post('/test')
           .end((err,res) => {
@@ -84,9 +86,9 @@ describe('server',() => {
     });
   });
 
-  describe('PUT',() => {
+  describe.skip('PUT',() => {
     describe('error handling',() => {
-      it('without a valid endpoint returns a 400 status code.', done => {
+      it('without a valid endpoint returns a 400 status code', done => {
         request
           .put('/test')
           .end((err,res) => {
@@ -98,9 +100,9 @@ describe('server',() => {
     });
 
     describe('operations', () => {
-      it('/books returns the updated object.', done => {
+      it('/books/resource returns the updated object', done => {
         request
-          .post('/books/'+testResource)
+          .put('/books/'+testResource)
           .set('Content-Type', 'application/json')
           .send(JSON.stringify(testData))
           .end((err,res) => {
@@ -114,7 +116,7 @@ describe('server',() => {
     });
   });
 
-  describe('DELETE',() => {
+  describe.skip('DELETE',() => {
     describe('error handling',() => {
       it('without a valid endpoint returns a 400 status code.', done => {
         request
@@ -128,9 +130,9 @@ describe('server',() => {
     });
 
     describe('operations', () => {
-      it('/books/resource returns the deletion notification.', done => {
+      it('/books/resource returns the deletion notification', done => {
         request
-          .post('/books/'+testResource)
+          .delete('/books/'+testResource)
           .set('Content-Type', 'application/json')
           .end((err,res) => {
             var result = JSON.parse(res.text);
@@ -141,6 +143,22 @@ describe('server',() => {
       });
     });
   });
+
+  describe('invalid method',() => {
+
+    it('sending PATCH request generates 405 error', done => {
+      request
+        .patch('/books')
+        .end((err,res) => {
+          assert.equal(res.statusCode, 405);
+          assert.ok(res.text);
+          done();
+        });
+    });
+  });
+
+
+
 
   after(done => {
     server.close(done);
