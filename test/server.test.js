@@ -6,6 +6,13 @@ chai.use(chaiHttp);
 
 describe('server',() => {
   const request = chai.request(server);
+  const testGetData =  {
+    'title' : 'Time Enough For Love',
+    'author' : 'Robert Heinlein',
+    'genre' : 'Science Fiction',
+    'pub_year' : 1973,
+    'read' : true
+  };
   const testPostData =  {
     'title' : 'Gone With The Wind',
     'author' : 'Margaret Mitchell',
@@ -39,13 +46,24 @@ describe('server',() => {
 
     describe('operations', () => {
 
+      // populating DB with data to retrieve
+      before(done => {
+        request
+          .post('/books')
+          .set('Content-Type', 'application/json')
+          .send(JSON.stringify(testGetData))
+          .end(() => done());
+      });
+
       it('/books returns a list of available resources', done => {
         request
           .get('/books')
           .end((err,res) => {
             assert.equal(res.statusCode, 200);
             assert.propertyVal(res.header,'content-type','application/json');
-            assert.isArray(JSON.parse(res.text));
+            let results = JSON.parse(res.text);
+            assert.isArray(results);
+            assert.isAtLeast(results.length, 1);
             done();
           });
       });
@@ -70,6 +88,7 @@ describe('server',() => {
           .post('/test')
           .end((err,res) => {
             assert.equal(res.statusCode, 400);
+            assert.propertyVal(res.header,'content-type','text/plain');
             assert.ok(res.text);
             done();
           });
@@ -101,6 +120,7 @@ describe('server',() => {
           .put('/test')
           .end((err,res) => {
             assert.equal(res.statusCode, 400);
+            assert.propertyVal(res.header,'content-type','text/plain');
             assert.ok(res.text);
             done();
           });
@@ -108,7 +128,7 @@ describe('server',() => {
     });
 
     describe('operations', () => {
-      it('/books/resource returns the updated object', done => {
+      it('/books/resource returns the updated item', done => {
         request
           .put('/books/'+testResource)
           .set('Content-Type', 'application/json')
@@ -116,6 +136,7 @@ describe('server',() => {
           .end((err,res) => {
             var result = JSON.parse(res.text);
             assert.equal(res.statusCode, 201);
+            assert.propertyVal(res.header,'content-type','application/json');
             assert.isObject(result);
             assert.property(result, 'resource');
             done();
@@ -159,6 +180,7 @@ describe('server',() => {
         .patch('/books')
         .end((err,res) => {
           assert.equal(res.statusCode, 405);
+          assert.propertyVal(res.header,'content-type','text/plain');
           assert.ok(res.text);
           done();
         });
