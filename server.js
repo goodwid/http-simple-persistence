@@ -46,6 +46,7 @@ const server = http.createServer((req,res) => {
         let book = (JSON.parse(body));
         db.create(book)
           .then(data => {
+            console.log('data: ',data);
             res.writeHead(201, {'Content-Type': 'application/json'});
             res.write(JSON.stringify(data));
             res.end();
@@ -55,7 +56,6 @@ const server = http.createServer((req,res) => {
             res.write(err);
             res.end();
           });
-        res.end(JSON.stringify(data));
       });
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
