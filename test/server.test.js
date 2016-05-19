@@ -6,13 +6,14 @@ chai.use(chaiHttp);
 
 describe('server',() => {
   const request = chai.request(server);
-  var testData =  {
+  const testData =  {
     'title' : 'Gone With The Wind',
     'author' : 'Margaret Mitchell',
     'genre' : 'fiction',
     'pub_year' : 1964,
     'read' : false
   };
+  const testResource = 'Gone_With_The_Wind_1964';
   describe('GET',() => {
     describe('error handling',() => {
       it('without a valid endpoint returns a 404 status code.', done => {
@@ -99,7 +100,7 @@ describe('server',() => {
     describe('operations', () => {
       it('/books returns the updated object.', done => {
         request
-          .post('/books')
+          .post('/books/'+testResource)
           .set('Content-Type', 'application/json')
           .send(JSON.stringify(testData))
           .end((err,res) => {
@@ -126,17 +127,15 @@ describe('server',() => {
       });
     });
 
-    describe.skip('operations', () => {
-      it('/books returns the updated object.', done => {
+    describe('operations', () => {
+      it('/books/resource returns the deletion notification.', done => {
         request
-          .post('/books')
+          .post('/books/'+testResource)
           .set('Content-Type', 'application/json')
-          .send(JSON.stringify(testData))
           .end((err,res) => {
             var result = JSON.parse(res.text);
             assert.equal(res.statusCode, 201);
-            assert.isObject(result);
-            assert.property(result, 'resource');
+            assert.isOk(result);
             done();
           });
       });

@@ -23,12 +23,14 @@
 
     {
       "title" : "Gone With The Wind",
+      "pub_year" : 1964,
       "author" : "Margaret Mitchell",
       "genre" : "fiction",
-      "pub_year" : 1964,
       "read" : false,
       "resource" : "gone_with_the_wind_1964"
     }
+
+  title and pub_year are required as they are combined to create the resource ID.
 
 #### Tests are available:
 
