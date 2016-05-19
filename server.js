@@ -14,11 +14,15 @@ const db = require('./db');
 
 const server = http.createServer((req,res) => {
   const requestPath = url.parse(req.url, true).pathname;
-  switch (req.method) {
+  const validEndPoint = /^\/books/.test(requestPath);
 
+
+  switch (req.method) {
+    
   case 'GET': {
-    if (/^\/books/.test(requestPath)) {
+    if (validEndPoint) {
       const resources = requestPath.split(/[\\/]/).splice(2);
+
       db.read(resources)
         .then(data => {
           res.writeHead(200, {'Content-Type': 'application/json'});
@@ -38,8 +42,9 @@ const server = http.createServer((req,res) => {
     break;
   }
 
+
   case 'POST': {
-    if (/^\/books/.test(requestPath)) {
+    if (validEndPoint) {
       let body='';
       req.on('data', (chunk) => body += chunk);
       req.on('end', () => {
@@ -62,8 +67,10 @@ const server = http.createServer((req,res) => {
     }
     break;
   }
+
+
   case 'PUT': {
-    if (/^\/books/.test(requestPath)) {
+    if (validEndPoint) {
       const resource = requestPath.split(/[\\/]/).splice(1)[1];
       let body='';
       req.on('data', (chunk) => body += chunk);
@@ -88,8 +95,9 @@ const server = http.createServer((req,res) => {
     }
     break;
   }
+
   case 'DELETE': {
-    if (/^\/books/.test(requestPath)) {
+    if (validEndPoint) {
       const resource = requestPath.split(/[\\/]/).splice(1)[1];
       db.delete(resource)
         .then(data => {
@@ -105,6 +113,8 @@ const server = http.createServer((req,res) => {
     }
     break;
   }
+
+
   default: {
     res.statusCode = 405;
     res.write('Method not supported.');
