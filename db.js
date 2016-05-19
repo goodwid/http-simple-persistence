@@ -1,6 +1,6 @@
 const fs = require('fs');
 const sander = require('sander');
-const mkdirp = require('mkdirp');
+// const mkdirp = require('mkdirp');
 
 
 var books = Object.create(null);
@@ -10,8 +10,7 @@ books.create = function(obj){
   // TODO: Need to check existence of the data directory, create if it doesn't exist
 
   // Assign a unique filename to the book
-  obj.filename = generateFileName();
-
+  obj.resource = generateFileName(obj);
   const path = 'data/' + obj.resource + '.json';
   var objJson = JSON.stringify(obj);
 
@@ -65,8 +64,8 @@ books.delete = function(){
 
 };
 
-function generateFileName(){
-  return Date.now();
+function generateFileName(obj){
+  return obj.title.split(' ').join('_') + '_' + obj.pub_year;
 }
 
 
