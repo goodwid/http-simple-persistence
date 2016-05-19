@@ -11,12 +11,9 @@ const server = http.createServer((req,res) => {
   case 'GET': {
     if (validEndPoint) {
       const resources = requestPath.split(/[\\/]/).splice(2);
-
       db.read(resources)
         .then(data => {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(data));
-          res.end();
+          writeJson(data, 200);
         })
         .catch(err => {
           writeError(err, 404);
@@ -36,9 +33,7 @@ const server = http.createServer((req,res) => {
       req.on('end', () => {
         db.create(JSON.parse(body))
           .then(data => {
-            res.writeHead(201, {'Content-Type': 'application/json'});
-            res.write(JSON.stringify(data));
-            res.end();
+            writeJson(data, 201);
           })
           .catch(err => {
             writeError(err, 400);
@@ -58,10 +53,7 @@ const server = http.createServer((req,res) => {
       req.on('end', () => {
         db.update(resource, JSON.parse(body))
           .then( data => {
-            console.log(data);
-            res.writeHead(201, {'Content-Type': 'application/json'});
-            res.write(JSON.stringify(data));
-            res.end();
+            writeJson(data, 201);
           })
           .catch(err => {
             writeError(err, 400);
@@ -79,9 +71,7 @@ const server = http.createServer((req,res) => {
       const resource = requestPath.split(/[\\/]/).splice(1)[1];
       db.delete(resource)
         .then(data => {
-          res.writeHead(201, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(data));
-          res.end();
+          writeJson(data, 201);
         })
         .catch(err => {
           writeError(err, 400);
@@ -93,7 +83,6 @@ const server = http.createServer((req,res) => {
     break;
   }
 
-
   default: {
     res.writeHead(405, {'Content-Type': 'text/plain'});
     res.write('Method not supported.');
@@ -104,6 +93,11 @@ const server = http.createServer((req,res) => {
   function badRequest() {
     res.writeHead(400, {'Content-Type': 'text/plain'});
     res.write('Bad Request.\n\nSorry, that request is not supported');
+    res.end();
+  }
+  function writeJson(data, code) {
+    res.writeHead(code, {'Content-Type': 'application/json'});
+    res.write(JSON.stringify(data));
     res.end();
   }
   function writeError(err, code) {
