@@ -25,18 +25,36 @@ books.create = function(obj){
   return promise;
 };
 
-books.read = function(resource){
+books.read = function(resourceArray){
+  const dir = 'data/';
 
-  // TODO: Test for array with items, empty array, or single object
+  if (resourceArray.length < 1){
+    // Given an empty array, returns a list of resources
+    return sander.readdir(dir).
+    then( fileNames => fileNames.map( e => e.slice(0, -5)));
+  }else{
 
-  const path = 'data/' + resource + '.json';
-  var promise = new Promise( (resolve, reject) =>{
-    fs.readFile(path, { encoding: 'utf-8'}, (err, data) =>{
-      if (err) reject(err);
-      else resolve(data);
-    });
-  });
-  return promise;
+    return sander.readdir(dir)
+    .then( totalArray => {
+      return totalArray.filter(item => {
+        var inArray = false;
+        for (var x = 0; x < resourceArray.length; x++){
+          if (resourceArray[x] === item.slice(0, -5)) {
+            inArray = true;
+          }
+        }
+        return inArray;
+      });
+    })
+    .then( resourceArray => resourceArray.map( e => dir + e))
+    .then( filePaths => {
+      return filePaths.map( p => {
+        return sander.readFile(p, {encoding: 'utf-8'});
+      });
+    })
+    .then(filePromises => Promise.all(filePromises))
+    .then( jsonItems => jsonItems.map( j => JSON.parse(j)));
+  }
 };
 
 books.update = function(){
