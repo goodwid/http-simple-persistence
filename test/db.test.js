@@ -4,7 +4,7 @@ const assert = require('chai').assert;
 
 describe('books module',() => {
 
-  describe('on create', () =>{
+  describe.only('on create', () =>{
 
     it('writes to json file and returns an object', ( done ) =>{
       db.create({title:'herbook', pub_year:'1986'})
@@ -13,6 +13,7 @@ describe('books module',() => {
         done();
       })
       .catch(error =>{
+        console.log(error);
         assert.isOk(error);
         done();
       });
@@ -70,7 +71,7 @@ describe('books module',() => {
     it('returns a delete message', (done) =>{
       db.delete('herbook_2008')
       .then( data => {
-        assert.equal(JSON.parse(data).message, 'deleted herbook_2008');
+        assert.equal(data.message, 'deleted herbook_2008');
         done();
       })
       .catch( err => {

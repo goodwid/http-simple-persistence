@@ -79,7 +79,7 @@ books.delete = function(resource){
   var origPath = path + resource + '.json';
   return sander.unlink(origPath)
   .then( () => {
-    return JSON.stringify({message:'deleted ' + resource});
+    return {message:'deleted ' + resource};
   });
 };
 
