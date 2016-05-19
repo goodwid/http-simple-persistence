@@ -27,7 +27,7 @@ describe('books module',() => {
   describe('on read', () =>{
 
     it('returns an array of objects when given an array of resources', ( done ) =>{
-      db.read(['test', 'herbook'])
+      db.read(['test', 'herbookxx'])
       .then( data =>{
         assert.equal(data.length, 2);
         done();
