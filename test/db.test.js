@@ -6,11 +6,7 @@ describe('books module',() => {
 
   describe('on create', () =>{
 
-    it('returns an object', () =>{
-
-    });
-
-    it('writes to json file', ( done ) =>{
+    it('writes to json file and returns an object', ( done ) =>{
       db.create({title:'herbook', pub_year:'1986'})
       .then(data => {
         assert.isOk(data);
@@ -27,7 +23,7 @@ describe('books module',() => {
   describe('on read', () =>{
 
     it('returns an array of objects when given an array of resources', ( done ) =>{
-      db.read(['test', 'herbookxx'])
+      db.read(['herbook_1986'])
       .then( data =>{
         assert.equal(data.length, 2);
         done();
@@ -74,7 +70,7 @@ describe('books module',() => {
     it('returns a delete message', (done) =>{
       db.delete('herbook_2008')
       .then( data => {
-        assert.equal(JSON.parse(data).message, 'deleted herbook_2008');
+        assert.equal(data.message, 'deleted herbook_2008');
         done();
       })
       .catch( err => {
