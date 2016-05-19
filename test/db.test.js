@@ -4,7 +4,7 @@ const assert = require('chai').assert;
 
 describe('books module',() => {
 
-  describe.only('on create', () =>{
+  describe('on create', () =>{
 
     it('writes to json file and returns an object', ( done ) =>{
       db.create({title:'herbook', pub_year:'1986'})
@@ -13,7 +13,6 @@ describe('books module',() => {
         done();
       })
       .catch(error =>{
-        console.log(error);
         assert.isOk(error);
         done();
       });
@@ -24,7 +23,7 @@ describe('books module',() => {
   describe('on read', () =>{
 
     it('returns an array of objects when given an array of resources', ( done ) =>{
-      db.read(['test', 'herbookxx'])
+      db.read(['herbook_1986'])
       .then( data =>{
         assert.equal(data.length, 2);
         done();
