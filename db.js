@@ -2,15 +2,14 @@ const fs = require('fs');
 const sander = require('sander');
 // const mkdirp = require('mkdirp');
 
-
 var books = Object.create(null);
 
 books.create = function(obj){
 
   // TODO: Need to check existence of the data directory, create if it doesn't exist
 
-  // Assign a unique filename to the book
   obj.resource = generateFileName(obj);
+
   const path = 'data/' + obj.resource + '.json';
   var objJson = JSON.stringify(obj);
 
@@ -45,23 +44,40 @@ books.read = function(resourceArray){
         return inArray;
       });
     })
-    .then( resourceArray => resourceArray.map( e => dir + e))
-    .then( filePaths => {
+    .then(resourceArray => resourceArray.map( e => dir + e))
+    .then(filePaths => {
       return filePaths.map( p => {
         return sander.readFile(p, {encoding: 'utf-8'});
       });
     })
     .then(filePromises => Promise.all(filePromises))
-    .then( jsonItems => jsonItems.map( j => JSON.parse(j)));
+    .then(jsonItems => jsonItems.map( j => JSON.parse(j)));
   }
 };
 
-books.update = function(){
+books.update = function(resource, obj){
+
+  const dir = 'data';
+  var path = dir + '/';
+  var origPath = path + resource + '.json';
+  var newPath = path + obj.resource + '.json';
+  var objJson = JSON.stringify(obj);
+
+  return sander.writeFile(newPath, objJson)
+  .then(sander.unlink(origPath));
 
 };
 
-books.delete = function(){
+books.delete = function(resource){
+  // Return JSON message about resource getting deleted
 
+  const dir = 'data';
+  var path = dir + '/';
+  var origPath = path + resource + '.json';
+  return sander.unlink(origPath)
+  .then( () => {
+    return JSON.stringify({message:'deleted ' + resource});
+  });
 };
 
 function generateFileName(obj){
