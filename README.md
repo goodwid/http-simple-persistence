@@ -3,12 +3,12 @@
 
 ## API server for books, by Dave and David
 
-#### To install, clone this repo then run
+##### To install, clone this repo then run
 
     npm install
     ./index.js [port]
 
-#### Available endpoints and methods:
+##### Available endpoints and methods:
 - GET
   - /books: gets a list of available books
   - /books/resource[/resource]: returns all data for each item listed.
@@ -19,7 +19,7 @@
 - DELETE
   - /books/resource: deleted the specified resource
 
-#### Data is stored in JSON format, as follows:
+##### Data is sent and received in JSON format, as follows:
 
     {
       "title" : "Gone With The Wind",
@@ -32,6 +32,6 @@
 
   title and pub_year are required as they are combined to create the resource ID.
 
-#### Tests are available:
+##### Tests are available:
 
     npm test
