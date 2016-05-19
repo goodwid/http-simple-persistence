@@ -18,7 +18,7 @@ books.create = function(obj){
 
     fs.writeFile(path, objJson, err =>{
       if (err) reject(err);
-      else resolve('arbitrary info');
+      else resolve(obj);
     });
   });
   return promise;
