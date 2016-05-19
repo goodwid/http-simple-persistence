@@ -41,11 +41,11 @@ describe('server',() => {
 
       it('/books/resource returns the data for that resource', done => {
         request
-          .get('/books/test')
+          .get('/books/gone_with_the_wind_1964')
           .end((err,res) => {
             assert.equal(res.statusCode, 200);
             assert.propertyVal(res.header,'content-type','application/json');
-            assert.isObject(JSON.parse(res.text));
+            assert.isArray(JSON.parse(res.text));
             done();
           });
       });
@@ -142,9 +142,6 @@ describe('server',() => {
       });
     });
   });
-
-
-
 
   after(done => {
     server.close(done);
