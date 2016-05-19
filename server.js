@@ -43,10 +43,8 @@ const server = http.createServer((req,res) => {
       let body='';
       req.on('data', (chunk) => body += chunk);
       req.on('end', () => {
-        let book = (JSON.parse(body));
-        db.create(book)
+        db.create(JSON.parse(body))
           .then(data => {
-            console.log('data: ',data);
             res.writeHead(201, {'Content-Type': 'application/json'});
             res.write(JSON.stringify(data));
             res.end();
@@ -60,7 +58,7 @@ const server = http.createServer((req,res) => {
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request.\n\nSorry, that request is not supported');
-      res.end('\n');
+      res.end();
     }
     break;
   }
@@ -70,35 +68,49 @@ const server = http.createServer((req,res) => {
       let body='';
       req.on('data', (chunk) => body += chunk);
       req.on('end', () => {
-        res.writeHead(201, {'Content-Type': 'application/json'});
-        res.write(body);
-        res.end('\n');
+        db.update(resource, JSON.parse(body))
+          .then( data => {
+            res.writeHead(201, {'Content-Type': 'application/json'});
+            res.write(data);
+            res.end();
+          })
+          .catch(err => {
+            res.writeHead(400, {'Content-Type': 'text/plain'});
+            res.write(err);
+            res.end();
+          });
       });
 
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request.\n\nSorry, that request is not supported');
-      res.end('\n');
+      res.end();
     }
     break;
   }
   case 'DELETE': {
     if (/^\/books/.test(requestPath)) {
-      null;
+      const resource = requestPath.split(/[\\/]/).splice(1)[1];
+      db.delete(resource)
+        .then(data => {
+          res.writeHead(201, {'Content-Type': 'application/json'});
+          res.write(data);
+          res.end();
+        });
+
     } else {
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request.\n\nSorry, that request is not supported');
-      res.end('\n');
+      res.end();
     }
     break;
   }
   default: {
     res.statusCode = 405;
     res.write('Method not supported.');
-    res.end('\n');
+    res.end();
   }
   }
 });
-
 
 module.exports = server;
