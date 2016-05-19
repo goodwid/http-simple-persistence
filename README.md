@@ -11,7 +11,7 @@
 #### Available endpoints and methods:
 - GET
   - /books: gets a list of available books
-  - /books/resource: returns all data for that particular item
+  - /books/resource[/resource]: returns all data for each item listed.
 - POST
   - /books: adds a new book to the database
 - PUT

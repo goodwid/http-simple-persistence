@@ -1,14 +1,14 @@
 const sander = require('sander');
 
-var books = Object.create(null);
+const books = Object.create(null);
 const dir = 'data';
-var path = dir + '/';
+const path = dir + '/';
 
 books.create = function(obj){
 
   obj.resource = generateFileName(obj);
-  var newPath = path + obj.resource + '.json';
-  var objJson = JSON.stringify(obj);
+  const newPath = path + obj.resource + '.json';
+  const objJson = JSON.stringify(obj);
 
   return sander.writeFile(newPath, objJson)
   .then( () =>{
@@ -16,14 +16,13 @@ books.create = function(obj){
   });
 };
 
-books.read = function(resourceArray){
+books.read = function(resourceArray) {
 
-  if (resourceArray.length < 1){
+  if (resourceArray.length < 1) {
     // Given an empty array, returns a list of resources
     return sander.readdir(path).
     then( fileNames => fileNames.map( e => e.slice(0, -5)));
-  }else{
-
+  } else {
     return sander.readdir(path)
     .then( totalArray => {
       return totalArray.filter(item => {
@@ -49,9 +48,9 @@ books.read = function(resourceArray){
 
 books.update = function(resource, obj){
 
-  var origPath = path + resource + '.json';
-  var newPath = path + obj.resource + '.json';
-  var objJson = JSON.stringify(obj);
+  const origPath = path + resource + '.json';
+  const newPath = path + obj.resource + '.json';
+  const objJson = JSON.stringify(obj);
 
   return sander.writeFile(newPath, objJson)
   .then(sander.unlink(origPath))
@@ -63,7 +62,7 @@ books.update = function(resource, obj){
 
 books.delete = function(resource){
 
-  var origPath = path + resource + '.json';
+  const origPath = path + resource + '.json';
   return sander.unlink(origPath)
   .then( () => {
     return {message:'deleted ' + resource};
