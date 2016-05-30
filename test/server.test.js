@@ -103,9 +103,9 @@ describe('server',() => {
           .end((err,res) => {
             var result = JSON.parse(res.text);
             assert.equal(res.statusCode, 201);
+            assert.propertyVal(res.header,'content-type','application/json');
             assert.isObject(result);
             assert.property(result, 'resource');
-            assert.propertyVal(res.header,'content-type','application/json');
             assert.propertyVal(result, 'genre', testPostData.genre);
             done();
           });
